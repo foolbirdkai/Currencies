@@ -3,4 +3,17 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="black">#000</color>
+    <color name="grey_very_dark">#111</color>
+    <color name="grey_dark">#222</color>
+    <color name="grey_med_dark">#333</color>
+    <color name="grey_med">#666</color>
+    <color name="grey_light">#aaa</color>
+    <color name="white">#fff</color>
+
+    <!--青绿色-->
+    <color name="turquoise">#ff22e9ff</color>
+
+    <color name="flat_blue">#ff1a51f4</color>
 </resources>
