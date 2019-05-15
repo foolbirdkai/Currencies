@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +48,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private String[] mCurrencies;
     private String mKey;
+
+    public static boolean isNumeric(String str) {
+        try {
+            double dub = Double.parseDouble(str);
+            Log.d(TAG, "isNumeric: " + dub);
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.mnu_codes:
+                launchBrowser(SplashActivity.URL_CODES);
+                break;
+            case R.id.mnu_invert:
+                invertCurrencies();
+                break;
+            case R.id.mnu_exit:
+                finish();
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,34 +121,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mCalcButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CurrencyConverterTask().execute(URL_BASE + mKey);
+                if (isNumeric(String.valueOf(mAmountEditText.getText()))) {
+                    new CurrencyConverterTask().execute(URL_BASE + mKey);
+                } else {
+                    Toast.makeText(MainActivity.this, "not a numeric value, try again.", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
         mKey = getKey("open_key");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.mnu_codes:
-                launchBrowser(SplashActivity.URL_CODES);
-                break;
-            case R.id.mnu_invert:
-                invertCurrencies();
-                break;
-            case R.id.mnu_exit:
-                finish();
-                break;
-        }
-        return true;
     }
 
     private boolean isOnline() {
@@ -174,10 +191,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.spn_for:
-                PrefsMgr.setString(this, FOR, extractCodeFromCurrency(((TextView) view).getText().toString()));
+                PrefsMgr.setString(this, FOR, extractCodeFromCurrency((String) parent.getItemAtPosition(position)));
                 break;
             case R.id.spn_hom:
-                PrefsMgr.setString(this, HOM, extractCodeFromCurrency(((TextView) view).getText().toString()));
+                PrefsMgr.setString(this, HOM, extractCodeFromCurrency((String) parent.getItemAtPosition(position)));
                 break;
             default:
                 break;
